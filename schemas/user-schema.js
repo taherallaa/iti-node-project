@@ -26,13 +26,14 @@ const validPassword = new passwordValidator()
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
+    unique: [true, "this user is uesed"],
     minlength: [6, "Please Enter valid name"],
   },
   email: {
     type: String,
-    unique: [true, "Please, Enter valid email"],
-    required: [true, "Please, Enter email"],
-    validate: [isEmail, "Please Enter valid email"],
+    unique: [true, "Invalid Email"],
+    required: [true, "Enter Email"],
+    validate: [isEmail, "Invalid Email"],
   },
   password: {
     type: String,
@@ -46,7 +47,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter phone number"],
     unique: [true, "this phone number is used"],
-    minlength: [11, "Please enter phone number"],
+    minlength: [8, "enter valid password"],
   },
   address: {
     type: String,

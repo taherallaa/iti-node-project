@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    select: true,
     required: true,
     validate: (value) => {
       console.log(value);
@@ -51,12 +52,14 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+    select: true,
     required: true,
   },
   role: {
     type: String,
     enum: ["user", "admin"],
     default: "user",
+    select: true,
   },
 });
 

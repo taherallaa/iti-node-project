@@ -7,18 +7,25 @@ const requireAuth = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.token_secret, (err, decoded) => {
       if (err) {
-        res.redirect("/login");
+        console.log(err);
+        res.json({ status: 401, message: "you don't have an account " });
       } else {
-        next();
+        if (decoded.role === "admin") {
+          next();
+        } else {
+          res.json({ status: 401, message: "you are not admin" });
+        }
       }
     });
   } else {
-    res.redirect("/login");
+    res.json({ message: "you don't have account. login" });
   }
 };
 
-const checkUser = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+const checkUserForProduct = (req, res, next) => {
+  const token =
+    req.headers.authorization.split(" ")[1] ?? req.headers.authorization;
+
   if (token) {
     jwt.verify(token, process.env.token_secret, async (err, decoded) => {
       if (err) {
@@ -35,4 +42,4 @@ const checkUser = (req, res, next) => {
   }
 };
 
-module.exports = requireAuth;
+module.exports = { requireAuth, checkUserForProduct };

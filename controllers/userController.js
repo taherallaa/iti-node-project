@@ -3,7 +3,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const userModel = require("../models/userModel");
+const handleError = require("../custome-errors/handle-error");
 
+/*
 const handleError = (err) => {
   const errors = {};
 
@@ -25,6 +27,7 @@ const handleError = (err) => {
   }
   return errors;
 };
+*/
 
 const createToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.token_secret);

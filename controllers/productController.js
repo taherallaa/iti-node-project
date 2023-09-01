@@ -2,10 +2,11 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
+const handleError = require("../custome-errors/handle-error");
 
-// handle error
-
+/*
 const handleError = (err) => {
   const errors = {};
 
@@ -27,6 +28,7 @@ const handleError = (err) => {
   }
   return errors;
 };
+*/
 
 module.exports.add_product = async (req, res) => {
   try {
@@ -38,6 +40,24 @@ module.exports.add_product = async (req, res) => {
       description,
     });
     res.json({ newProduct });
+  } catch (err) {
+    console.log(err);
+    const errors = handleError(err);
+    res.send(errors);
+  }
+};
+
+module.exports.edit_product = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { productName, price, description } = req.body;
+
+    const updatedProduct = await productModel.findByIdAndUpdate(id, {
+      productName,
+      price,
+      description,
+    });
+    res.json(updatedProduct);
   } catch (err) {
     console.log(err);
     const errors = handleError(err);
@@ -94,4 +114,26 @@ module.exports.delete_products = async (req, res) => {
     .catch(() => {
       res.json({ message: "product not founded" });
     });
+};
+
+module.exports.add_to_cart = async (req, res) => {
+  // check if user add the product to cart again [notice him or increase]
+  try {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    console.log(product);
+    const { productQuntity } = req.body;
+
+    if (!product) res.json({ error: "this product no valid" });
+
+    const cart = await cartModel.create({
+      _id: id,
+      product,
+      productQuntity,
+    });
+    res.json(cart);
+  } catch (err) {
+    const errors = handleError(err);
+    res.send(errors);
+  }
 };

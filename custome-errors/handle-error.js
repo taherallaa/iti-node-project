@@ -4,8 +4,14 @@ const handleError = (err) => {
   if (err.code === 11000) {
     Object.values(err).forEach((item) => {
       if (typeof item === "object") {
-        errors[Object.keys(item)] = "must be unique";
+        errors[Object.keys(item)] = "This is already Existing";
       }
+    });
+  }
+
+  if (err.message.includes("Cart validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
     });
   }
 

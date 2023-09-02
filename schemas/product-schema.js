@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   productName: {
     type: String,
-    unique: [true, "this user is uesed"],
     minlength: [10, "at least 10 letters"],
   },
   price: {

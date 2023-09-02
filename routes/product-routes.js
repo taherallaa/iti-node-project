@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { requireAuth } = require("../middleware/authMiddleware");
+const { requireAuth, productAuth } = require("../middleware/authMiddleware");
 const controller = require("../controllers/productController");
 
 router.get("/products", controller.show_products);
@@ -16,7 +16,5 @@ router.delete(
   requireAuth,
   controller.delete_one_product,
 );
-
-router.post("/product/cart/:id", requireAuth, controller.add_to_cart);
 
 module.exports = router;

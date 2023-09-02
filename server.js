@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const userRouter = require("./routes/user-route");
 const productRouter = require("./routes/product-routes");
+const cartRouter = require("./routes/cart-routes");
 
 const port = process.env.port;
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", userRouter);
 app.use("/", productRouter);
+app.use("/", cartRouter);
 
 app.listen(port, () => {
   console.log(`server is running on http://loaclhost:${port}`);

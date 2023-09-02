@@ -1,6 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
+const cartModel = require("../models/cartModel");
 
 const requireAuth = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
@@ -22,24 +23,27 @@ const requireAuth = (req, res, next) => {
   }
 };
 
-const checkUserForProduct = (req, res, next) => {
+const cartAuth = (req, res, next) => {
   const token =
-    req.headers.authorization.split(" ")[1] ?? req.headers.authorization;
+    req.headers.authorization.split(" ")[1] || req.headers.authorization;
 
   if (token) {
     jwt.verify(token, process.env.token_secret, async (err, decoded) => {
       if (err) {
         console.log(err);
-        next();
+        res.json({ status: 401, message: "you don't have an account " });
       } else {
-        console.log(decoded);
-        const user = await userModel.findById(decoded.id);
-        next();
+        if (decoded.role === "user") {
+          next();
+        } else {
+          res.json({ error: "Only Users have  Access to Cart" });
+        }
       }
     });
   } else {
-    next();
+    console.log(err);
+    res.json({ status: 401, message: "you don't have an account, signup " });
   }
 };
 
-module.exports = { requireAuth, checkUserForProduct };
+module.exports = { requireAuth, cartAuth };

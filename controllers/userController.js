@@ -5,32 +5,8 @@ const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
 const handleError = require("../custome-errors/handle-error");
 
-/*
-const handleError = (err) => {
-  const errors = {};
-
-  if (err.code === 11000) {
-    Object.values(err).forEach((item) => {
-      if (typeof item === "object") {
-        errors[Object.keys(item)] = "must be unique";
-      }
-    });
-  }
-
-  if (
-    err.message.includes("admin validation failed") ||
-    err.message.includes("user validation failed")
-  ) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
-  return errors;
-};
-*/
-
-const createToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.token_secret);
+const createToken = (id, userName, role) => {
+  return jwt.sign({ id, userName, role }, process.env.token_secret);
 };
 
 module.exports.user_signup = async (req, res) => {
@@ -46,7 +22,7 @@ module.exports.user_signup = async (req, res) => {
       role,
     });
 
-    const token = createToken(newUser._id, role);
+    const token = createToken(newUser._id, username, role);
     res.json({ newUser, token });
   } catch (err) {
     const errors = handleError(err);
@@ -59,7 +35,7 @@ module.exports.user_login = async (req, res) => {
     const { username, email, password } = req.body;
     const user = await userModel.findOne({ username, email }).select("-__v ");
     if (user && (await bcrypt.compare(password, user.password))) {
-      const token = createToken(user.id, user.role);
+      const token = createToken(user.id, username, user.role);
       res.json({ user, token });
     } else {
       res.json({ message: "invalid email or password" });

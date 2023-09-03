@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
 const handleError = require("../custome-errors/handle-error");
+const cartSchema = require("../schemas/cart-schema");
 
 module.exports.add_to_cart = async (req, res) => {
   try {
@@ -12,7 +13,8 @@ module.exports.add_to_cart = async (req, res) => {
     /// get product and check on it if it exist or not...
     const product = await productModel.findById(productId);
     if (!product) res.send("product not found");
-    let totalPrice = product.price;
+
+    let price = 0;
 
     /// using toke to get id of user to override it into document id...
     const token =
@@ -26,10 +28,14 @@ module.exports.add_to_cart = async (req, res) => {
       /// flag to avoid ErrorCaptureStackTrace(err);
       /// happen because send mulitple response to client;
       let exist = false;
-
       existingCart.products.forEach((prod) => {
+        price += prod.price;
         if (prod._id == productId) exist = true;
       });
+
+      /// update total price of chart...
+      existingCart.totalPrice = price;
+      existingCart.save();
 
       if (exist) {
         res.send("this product is already add");
@@ -44,7 +50,7 @@ module.exports.add_to_cart = async (req, res) => {
       const cart = await cartModel.create({
         _id: userId,
         products: product,
-        totalPrice,
+        totalPrice: price,
         productQuntity,
       });
       res.json(cart);

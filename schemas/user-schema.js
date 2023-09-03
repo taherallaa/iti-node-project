@@ -26,7 +26,7 @@ const validPassword = new passwordValidator()
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: [true, "this user is uesed"],
+    //unique: [true, "this user is uesed"],
     minlength: [6, "Please Enter valid name"],
   },
   email: {

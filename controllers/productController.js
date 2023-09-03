@@ -44,6 +44,7 @@ module.exports.edit_product = async (req, res) => {
 module.exports.show_products = async (req, res) => {
   await productModel
     .find()
+    .select("-quntity")
     .then((products) => {
       if (products) {
         res.json(products);

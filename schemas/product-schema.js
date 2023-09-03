@@ -15,6 +15,10 @@ const productSchema = new mongoose.Schema({
     required: [true, "Please Enter description"],
     minlength: [10, "at least 10 characters"],
   },
+  quntity: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = productSchema;

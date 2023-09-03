@@ -24,25 +24,31 @@ const requireAuth = (req, res, next) => {
 };
 
 const cartAuth = (req, res, next) => {
-  const token =
-    req.headers.authorization.split(" ")[1] || req.headers.authorization;
+  try {
+    const { authorization: readToken } = req.headers;
+    const readTokenWithBearer = req.headers.authorization.split(" ")[1];
 
-  if (token) {
-    jwt.verify(token, process.env.token_secret, async (err, decoded) => {
-      if (err) {
-        console.log(err);
-        res.json({ status: 401, message: "you don't have an account " });
-      } else {
-        if (decoded.role === "user") {
-          next();
+    const token = readTokenWithBearer ?? readToken;
+
+    if (token) {
+      jwt.verify(token, process.env.token_secret, async (err, decoded) => {
+        if (err) {
+          console.log(err);
+          res.json({ status: 401, message: "you don't have an account " });
         } else {
-          res.json({ error: "Only Users have  Access to Cart" });
+          if (decoded.role === "user") {
+            next();
+          } else {
+            res.json({ error: "Only Users have  Access to Cart" });
+          }
         }
-      }
-    });
-  } else {
+      });
+    } else {
+      // console.log(err);
+      res.json({ status: 401, message: "you don't have an account, signup " });
+    }
+  } catch (err) {
     console.log(err);
-    res.json({ status: 401, message: "you don't have an account, signup " });
   }
 };
 

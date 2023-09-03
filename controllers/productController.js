@@ -33,7 +33,7 @@ module.exports.edit_product = async (req, res) => {
       price,
       description,
     });
-    res.json(updatedProduct);
+    res.json({ message: "User Updated", updatedProduct });
   } catch (err) {
     console.log(err);
     const errors = handleError(err);
@@ -43,7 +43,7 @@ module.exports.edit_product = async (req, res) => {
 
 module.exports.show_products = async (req, res) => {
   await productModel
-    .findOne()
+    .find()
     .then((products) => {
       if (products) {
         res.json(products);
@@ -74,7 +74,11 @@ module.exports.delete_one_product = async (req, res) => {
   await productModel
     .findByIdAndDelete(id)
     .then((product) => {
-      res.json(product);
+      if (product) {
+        res.json({ deletedProduct: product });
+      } else {
+        res.json({ message: "product not founded" });
+      }
     })
     .catch(() => {
       res.json({ message: "product not founded" });

@@ -16,7 +16,7 @@ const handleError = (err) => {
   }
 
   if (
-    err.message.includes("admin validation failed") ||
+    err.message.includes("User validation failed") ||
     err.message.includes("user validation failed")
   ) {
     Object.values(err.errors).forEach(({ properties }) => {

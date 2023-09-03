@@ -12,7 +12,7 @@ module.exports.add_to_cart = async (req, res) => {
     /// get product and check on it if it exist or not...
     const product = await productModel.findById(productId);
     if (!product) res.send("product not found");
-    let totalPrice = 0;
+    let totalPrice = product.price;
 
     /// using toke to get id of user to override it into document id...
     const token =
@@ -28,7 +28,6 @@ module.exports.add_to_cart = async (req, res) => {
       let exist = false;
 
       existingCart.products.forEach((prod) => {
-        totalPrice += prod.price;
         if (prod._id == productId) exist = true;
       });
 
@@ -54,6 +53,7 @@ module.exports.add_to_cart = async (req, res) => {
   } catch (err) {
     console.log(err);
     const errors = handleError(err);
+    res.send(errors);
   }
 };
 

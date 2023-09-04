@@ -1,8 +1,5 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
-const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
 const handleError = require("../custome-errors/handle-error");
 
@@ -24,21 +21,21 @@ module.exports.add_product = async (req, res) => {
 };
 
 module.exports.edit_product = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { productName, price, description } = req.body;
-
-    const updatedProduct = await productModel.findByIdAndUpdate(id, {
+  const id = req.params.id;
+  const { productName, price, description } = req.body;
+  productModel
+    .findByIdAndUpdate(id, {
       productName,
       price,
       description,
+    })
+    .then((prod) => {
+      if (prod) res.json({ updatedProduct: prod });
+      else res.json({ message: "Product not found" });
+    })
+    .catch((err) => {
+      res.send("product not found");
     });
-    res.json({ message: "User Updated", updatedProduct });
-  } catch (err) {
-    console.log(err);
-    const errors = handleError(err);
-    res.send(errors);
-  }
 };
 
 module.exports.show_products = async (req, res) => {
@@ -78,11 +75,12 @@ module.exports.delete_one_product = async (req, res) => {
       if (product) {
         res.json({ deletedProduct: product });
       } else {
-        res.json({ message: "product not founded" });
+        res.json({ message: "product not founded or deleted" });
       }
     })
-    .catch(() => {
-      res.json({ message: "product not founded" });
+    .catch((error) => {
+      //res.json({ message: "product not founded or deleted" });
+      res.json(handleError(error));
     });
 };
 

@@ -7,10 +7,6 @@ const cartSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  // productQuntity: {
-  //   type: Number,
-  //   default: 1,
-  // },
 });
 
 module.exports = cartSchema;

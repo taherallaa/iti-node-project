@@ -79,11 +79,26 @@ module.exports.show_all_carts = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-module.exports.show_my_cart = async (req, res) => {
+module.exports.show_my_cart = asyncHandler(async (req, res) => {
   const token = req.headers.authorization;
-  res.send(token);
-};
+  const id = jwt.verify(token, process.env.token_secret).id;
 
-module.exports.edit_cart = async (req, res) => {
-  res.send("cart update");
-};
+  const cart = await cartModel.findById(id);
+  if (cart) {
+    res.json(cart);
+  } else {
+    res.json({ message: "you don't add prducts to cart yet" });
+  }
+});
+
+module.exports.cart_cancel = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization;
+  const userId = jwt.verify(token, process.env.token_secret).id;
+
+  const cancelCart = await cartModel.findByIdAndDelete(userId);
+  if (cancelCart) {
+    res.send("Cart is Deleted ");
+  } else {
+    res.json({ message: "you don't add prducts to cart yet" });
+  }
+});

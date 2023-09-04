@@ -11,12 +11,8 @@ router.get(
   controller.show_all_carts,
 );
 
-router.get("/product/cart/my_cart", controller.show_my_cart);
+router.post("/product/cart/cancel", cartAuth, controller.cart_cancel);
 
-router.patch(
-  "/product/cart/:cartId/:productId",
-  cartAuth,
-  controller.edit_cart,
-);
+router.get("/product/cart/my_cart", cartAuth, controller.show_my_cart);
 
 module.exports = router;

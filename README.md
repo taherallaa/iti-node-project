@@ -1,2 +1,5 @@
 # iti-node-project
-summer trainning project about making api for e-commerce 
+
+Summer Trainning project about making APIs for E-commerce
+
+> special thank to our helpful instructor [Alaa Hagrassy](https://www.linkedin.com/in/alaa-hagrassy/)
